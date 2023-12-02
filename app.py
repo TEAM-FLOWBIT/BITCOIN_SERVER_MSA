@@ -21,6 +21,7 @@ port = sock.getsockname()[1]
 sock.close()
 
 rest_port = port
+#rest_port = 5000
 eureka_client.init(eureka_server="http://localhost:8761/eureka",
                    app_name="bitcoin-service",
                    instance_port=rest_port)
@@ -137,11 +138,11 @@ def get_chart_analysis():
     chat_machine = ChatMachine()
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
     res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-    print(res)
+    #print(res)
     #chart_data = chart_machine.get_analysis_chart()
 
     #print(chart_data.get("datas"))
-    return "It works!"
+    return res
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=rest_port, use_reloader=False)
