@@ -12,9 +12,20 @@ from machine.bithumb_machine import BithumbMachine
 from bson import json_util
 from machine.chart_machine import ChartMachine
 from machine.chatGPT_machine import ChatMachine
+import py_eureka_client.eureka_client as eureka_client
+import socket
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(('localhost', 0))
+port = sock.getsockname()[1]
+sock.close()
+
+rest_port = port
+eureka_client.init(eureka_server="http://localhost:8761/eureka",
+                   app_name="bitcoin-service",
+                   instance_port=rest_port)
 
 app = Flask(__name__)
-
 
 @app.route("/test_model")
 def model():
@@ -132,4 +143,5 @@ def get_chart_analysis():
     #print(chart_data.get("datas"))
     return "It works!"
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=rest_port, use_reloader=False)
