@@ -10,13 +10,26 @@ class MongoDBHandler(DBHandler):
     리모트 DB와 로컬 DB를 모두 사용할 수 있도록 __init__에서 mode로 구분한다.
     """
 
-    def __init__(self, mode="local", db_name=None, collection_name=None):
+    def __init__(self, mode="remote", db_name=None, collection_name=None):
         """
         MongoDBHandler __init__ 구현부
         :param mode: 로컬 DB인지 리모트 DB인지를 구분한다.
         :param db_name: MongoDB에서 데이터베이스에 해당하는 이름을 받는다.
         :param collection_name: 데이터베이스에 속하는 콜렉션 이름을 받는다.
         """
+
+        config = configparser.ConfigParser()
+        config.read('conf/config.ini')
+        self.db_config = {}
+        self.db_config["local_ip"] = config['MONGODB']['local_ip']
+        self.db_config["port"] = config['MONGODB']['port']
+        self.db_config["remote_host"] = config['MONGODB']['remote_host']
+        self.db_config["user"] = config['MONGODB']['user']
+        self.db_config["password"] = config['MONGODB']['password']
+
+        #print(self.db_config.get("user"))
+        #print(self.db_config.get("password"))
+        print("mongodb://{user}:{password}@{remote_host}:{port}".format(**self.db_config))
 
         if mode == "remote":
             self._client = MongoClient("mongodb://{user}:{password}@{remote_host}:{port}".format(**self.db_config))

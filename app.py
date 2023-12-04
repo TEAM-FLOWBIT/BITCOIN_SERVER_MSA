@@ -22,7 +22,7 @@ sock.close()
 
 rest_port = port
 #rest_port = 5000
-eureka_client.init(eureka_server="http://localhost:8761/eureka",
+eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
                    app_name="bitcoin-service",
                    instance_port=rest_port)
 
