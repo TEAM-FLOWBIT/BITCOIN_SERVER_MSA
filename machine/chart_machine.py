@@ -1,4 +1,3 @@
-
 from db.mongodb.mongodb_handler import MongoDBHandler
 
 class ChartMachine:
