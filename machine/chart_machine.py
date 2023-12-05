@@ -11,32 +11,17 @@ class ChartMachine:
         actual_data_list = []
         predicted_data_list = []
 
-
         actual_data_str = ''
         predicted_data_str = ''
 
         for i in actual_data:
-            #print(i)
             i["_id"] = str(i["_id"])
-            #del i["_id"]
             actual_data_str += str(i)
-            #actual_data_list.append(i)
-
 
         for i in predicted_data:
-            #print(i)
             i["_id"] = str(i["_id"])
-            #del i["_id"]
             predicted_data_str += str(i)
-            #predicted_data_list.append(i)
         
-        #print(actual_data_list)
-        #print(predicted_data_list)
-
-        
-
-        print(actual_data_str)
-        print(predicted_data_str)
         return actual_data_str, predicted_data_str
 
     def get_basic_chart(self):
@@ -49,15 +34,9 @@ class ChartMachine:
         lables = []
 
         for i in actual_data:
-            print(i)
-            #i["_id"] = str(i["_id"])
-            #del i["_id"]
             actual_data_list.append(i["close_price"])
 
         for i in predicted_data:
-            print(i)
-            #i["_id"] = str(i["_id"])
-            #del i["_id"]
             lables.append(i["timestamp"])
             predicted_data_list.append(i["predicted_price"])
 
