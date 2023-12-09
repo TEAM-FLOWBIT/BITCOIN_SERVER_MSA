@@ -63,7 +63,7 @@ class MySqlHandler():
             item["low_price"] = result[5]
             item["volume"] = result[6]
             ret_list.append(item)
-            print(item)
+            #print(item)
         
         return ret_list
     

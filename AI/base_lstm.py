@@ -28,7 +28,7 @@ def init_code():
 
     #bithubm에서 모든 데이터 가지고 와서 바로 저장
     datas = bithumbMachine.get_all_data()
-    print(type(datas))
+    #print(type(datas))
     mySqlHandler.insert_items_to_actual_data(datas)
     #mongodbMachine.insert_items(datas=datas,db_name="AI", collection_name="actual_data")
 

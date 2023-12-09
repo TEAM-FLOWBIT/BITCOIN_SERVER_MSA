@@ -15,7 +15,7 @@ from machine.chatGPT_machine import ChatMachine
 import datetime
 
 def extract_close_prices(data):
-    print(str(data))
+    #print(str(data))
     #close_prices = [float(entry['close_price']) for entry in data]
     return close_prices
 
@@ -38,7 +38,7 @@ def save_one_day_data():
     #model 예측 과정
 
     past_data = mySqlHandler.find_close_price_from_actual_data(limit=15)
-    print(past_data)
+    #print(past_data)
     data = get_last_price_mysql(past_data)
     #past_data = mongodbMachine.find_items_for_db(db_name="AI", collection_name="actual_data")
     #print(past_data)
