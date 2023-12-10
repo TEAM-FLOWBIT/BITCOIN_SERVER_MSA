@@ -36,7 +36,7 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value():
     db = MongoDBHandler(db_name="AI", collection_name="predicted_data")
-    mySqlHandler = MySqlHandler(mode="local", db_name="flowbit")
+    mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
     data = mySqlHandler.find_all_items_from_predicted_data(limit=1)[0]
 
     #data = db.find_last_item(db_name="AI", collection_name="predicted_data")
@@ -52,7 +52,7 @@ def get_basic_chart():
 
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
-    mySqlHandler = MySqlHandler(mode="local", db_name="flowbit")
+    mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
     #db = MongoDBHandler(db_name="AI", collection_name="analysis_data")
     data = mySqlHandler.find_all_items_from_analysis_data(limit=1)[0]
     #data = db.find_last_item(db_name="AI", collection_name="analysis_data")

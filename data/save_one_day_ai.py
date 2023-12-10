@@ -27,8 +27,8 @@ def get_last_price_mysql(data):
 def save_one_day_data():
     bithumbMachine = BithumbMachine()
     lstmMachine = LstmMachine()
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
-    mySqlHandler = MySqlHandler(mode="local", db_name="flowbit")
+    #mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+    mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
 
     #하루치 데이터 저장
     data = bithumbMachine.get_last_data()

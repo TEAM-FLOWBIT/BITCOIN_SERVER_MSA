@@ -121,6 +121,52 @@ class MySqlHandler():
         result = self.cursor.fetchall()
         #print(result)
         return result
+    def set_table(self):
+        query = """CREATE DATABASE IF NOT EXISTS flowbit;"""
+        self.cursor.execute(query)
+
+        query="""USE flowbit;"""
+        self.cursor.execute(query)
+
+        query = """DROP TABLE  if exists analysis_data;"""
+        self.cursor.execute(query)
+
+        query = """DROP TABLE  if exists actual_data;"""
+        self.cursor.execute(query)
+
+        query = """DROP TABLE  if exists predicted_data;"""
+        self.cursor.execute(query)
+
+        query = """
+        CREATE TABLE analysis_data (aid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, timestamp DATE NOT NULL DEFAULT 0, gpt_response VARCHAR(3000) NULL DEFAULT 0)COLLATE='utf8mb4_0900_ai_ci';"""
+        self.cursor.execute(query)
+        query = """
+        CREATE TABLE predicted_data (
+        pid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        timestamp DATE NOT NULL DEFAULT 0,
+        predicted_price DOUBLE NOT NULL DEFAULT 0
+        )
+        COLLATE='utf8mb4_0900_ai_ci'
+        ;
+
+        """
+        self.cursor.execute(query)
+
+        query = """
+        CREATE TABLE actual_data (
+        aid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        timestamp DATE NOT NULL DEFAULT 0,
+        open_price BIGINT NOT NULL DEFAULT 0,
+        close_price BIGINT NOT NULL DEFAULT 0,
+        high_price BIGINT NOT NULL DEFAULT 0,
+        low_price BIGINT NOT NULL DEFAULT 0,
+        volume DOUBLE NULL DEFAULT NULL
+        )
+        COLLATE='utf8mb4_0900_ai_ci'
+        ;
+        """
+        self.cursor.execute(query)
+        pass
 
     def insert_items(self):
         pass

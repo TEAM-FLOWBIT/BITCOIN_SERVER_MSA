@@ -13,6 +13,7 @@ from AI.lstm_machine import LstmMachine
 from db.mysql.mysql_handler import MySqlHandler
 from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
+from db.mysql.mysql_handler import MySqlHandler
 
 import datetime
 
@@ -23,7 +24,8 @@ def extract_close_prices(data):
 def init_code():
     bithumbMachine = BithumbMachine()
     lstmMachine = LstmMachine()
-    mySqlHandler = MySqlHandler(mode="local", db_name="flowbit")
+    mySqlHandler = MySqlHandler(mode="remote")
+    mySqlHandler.set_table()
     #mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     #bithubm에서 모든 데이터 가지고 와서 바로 저장
