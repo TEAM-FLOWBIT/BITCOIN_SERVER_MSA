@@ -9,17 +9,17 @@ import data.save_one_day_ai as save_one_day_ai
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
 import json
-
+import os
 
 # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # sock.bind(('localhost', 0))
 # port = sock.getsockname()[1]
 # sock.close()
+rest_port=port = int(os.getenv("PORT", 8080))
 
-# rest_port = port
-# eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
-#                    app_name="bitcoin-service",
-#                    instance_port=rest_port)
+eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
+                   app_name="bitcoin-service",
+                   instance_port=rest_port)
 
 app = Flask(__name__)
 def upbit_get_usd_krw():
@@ -84,4 +84,5 @@ sched.start()
 
 if __name__ == "__main__":
     init.init_code()
-    app.run(debug=True, host='0.0.0.0',  use_reloader=False)
+    port = int(os.getenv("PORT", 8080))
+    app.run(host='0.0.0.0', port=port, debug=True)
