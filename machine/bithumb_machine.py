@@ -14,7 +14,7 @@ class BithumbMachine:
         response = requests.get(url, headers=headers)
 
     def save_data_for_db(self):
-        db_handler = MongoDBHandler()
+        #db_handler = MongoDBHandler()
 
         url = "https://api.bithumb.com/public/candlestick/BTC_KRW/24h"
 

@@ -1,6 +1,5 @@
 import pymysql
 import configparser
-from sqlalchemy import create_engine, text
 
 
 class MySqlHandler():

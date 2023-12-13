@@ -29,7 +29,7 @@ def init_code():
     #mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     #bithubm에서 모든 데이터 가지고 와서 바로 저장
-    datas = bithumbMachine.get_all_data()
+    datas = bithumbMachine.get_all_data()[-50:]
     #print(type(datas))
     mySqlHandler.insert_items_to_actual_data(datas)
     #mongodbMachine.insert_items(datas=datas,db_name="AI", collection_name="actual_data")

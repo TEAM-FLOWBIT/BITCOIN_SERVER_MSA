@@ -1,5 +1,7 @@
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
+import sys
+import os
 import numpy as np
 
 
@@ -10,8 +12,13 @@ class LstmMachine:
         config.ini에서 정보를 읽어옴
         """
         # self.model_path = "static/BITCOIN_MODEL_VER1.h5"
+
+        sys.path.append(os.path.realpath(__file__)[0:-15])
         self.scaler = MinMaxScaler(feature_range=(0, 1))
-        self.model = load_model("AI/BITCOIN_MODEL_VER1.h5", compile=False)
+        #print(os.path.realpath(__file__)[0:-15])
+        real_path = os.path.realpath(__file__)[0:-15] + "BITCOIN_MODEL_VER1.h5"
+        #print(real_path)
+        self.model = load_model(real_path, compile=False)
 
     """def get_model(self, current_data):
 

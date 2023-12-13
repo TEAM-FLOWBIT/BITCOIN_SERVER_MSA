@@ -1,4 +1,4 @@
-from db.mongodb.mongodb_handler import MongoDBHandler
+#from db.mongodb.mongodb_handler import MongoDBHandler
 from db.mysql.mysql_handler import MySqlHandler
 
 class ChartMachine:
@@ -35,8 +35,8 @@ class ChartMachine:
     def get_basic_chart(self):
 
         mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
-        actual_data = mySqlHandler.find_all_items_from_actual_data(limit=14)
-        predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=15)
+        actual_data = mySqlHandler.find_all_items_from_actual_data(limit=30)
+        predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=31)
         #db = MongoDBHandler(db_name="AI", collection_name="actual_data")
         #actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
         #predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
@@ -49,7 +49,7 @@ class ChartMachine:
             actual_data_list.append(i["close_price"])
 
         for i in predicted_data:
-            lables.append(i["timestamp"])
+            lables.append(i["timestamp"][5:])
             predicted_data_list.append(i["predicted_price"])
 
         chart_data = {}
@@ -60,12 +60,12 @@ class ChartMachine:
         max_value = max(actual_data_list + predicted_data_list)
         min_value = min(actual_data_list + predicted_data_list)
 
-        blank = (min_value + max_value) / 10
+        blank = (min_value + max_value) / 30
         chart_data["max"] = max_value + blank
-        chart_data["min"] = min_value + blank
-        chart_data["label"] = lables
+        chart_data["min"] = min_value - blank
+        chart_data["label"] = lables[::2][1:]
         chart_data["datas"] = [
-            {"label" : "actual_data", "datas" : actual_data_list}, 
-            {"label" : "predicted_data", "datas" : predicted_data_list}]
+            {"label" : "실제 BTC", "datas" : actual_data_list}, 
+            {"label" : "예측 BTC", "datas" : predicted_data_list}]
 
         return chart_data
