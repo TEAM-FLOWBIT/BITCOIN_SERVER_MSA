@@ -15,17 +15,13 @@ import os
 # sock.bind(('localhost', 0))
 # port = sock.getsockname()[1]
 # sock.close()
-rest_port=port = int(os.getenv("PORT", 8080))
+rest_port = int(os.getenv("PORT", 8080))
 
 eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
                    app_name="bitcoin-service",
                    instance_port=rest_port)
 
 app = Flask(__name__)
-def upbit_get_usd_krw():
-    url = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'
-    exchange =requests.get(url, headers=headers).json()
-    return exchange[0]['basePrice']
 
 @app.route("/")
 def home():
@@ -38,7 +34,6 @@ def home():
     </html>
     """
     return html
-
 @app.route("/get_predict_value")
 def get_predict_value():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
@@ -85,4 +80,5 @@ sched.start()
 if __name__ == "__main__":
     init.init_code()
     port = int(os.getenv("PORT", 8080))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(port=port)
+    #app.run(host='0.0.0.0', port=port, debug=True)

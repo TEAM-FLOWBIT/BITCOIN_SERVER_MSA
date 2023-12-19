@@ -137,7 +137,7 @@ class MySqlHandler():
         self.cursor.execute(query)
 
         query = """
-        CREATE TABLE analysis_data (aid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, timestamp DATE NOT NULL DEFAULT 0, gpt_response VARCHAR(3000) NULL DEFAULT 0)COLLATE='utf8mb4_0900_ai_ci';"""
+        CREATE TABLE analysis_data (aid BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, timestamp DATE NOT NULL DEFAULT 0, gpt_response VARCHAR(9000) NULL DEFAULT 0)COLLATE='utf8mb4_0900_ai_ci';"""
         self.cursor.execute(query)
         query = """
         CREATE TABLE predicted_data (
