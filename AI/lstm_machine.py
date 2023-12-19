@@ -13,11 +13,15 @@ class LstmMachine:
         """
         # self.model_path = "static/BITCOIN_MODEL_VER1.h5"
 
-        sys.path.append(os.path.realpath(__file__)[0:-15])
+        # sys.path.append(os.path.abspath(__file__)[0:-15])
         self.scaler = MinMaxScaler(feature_range=(0, 1))
-        #print(os.path.realpath(__file__)[0:-15])
-        real_path = os.path.realpath(__file__)[0:-15] + "BITCOIN_MODEL_VER1.h5"
-        #print(real_path)
+        # print(os.path.realpath(__file__))
+        real_path = os.path.abspath(__file__)[0:-18]+"BITCOIN_MODEL_VER1.h5"
+        print("리얼패스 시발",real_path)
+        if os.path.isfile(real_path):
+            print("File exists:", real_path)
+        else:
+            print("File does not exist:", real_path)
         self.model = load_model(real_path, compile=False)
 
     """def get_model(self, current_data):

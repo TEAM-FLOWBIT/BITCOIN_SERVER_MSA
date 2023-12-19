@@ -1,4 +1,3 @@
-#from db.mongodb.mongodb_handler import MongoDBHandler
 from db.mysql.mysql_handler import MySqlHandler
 
 class ChartMachine:
@@ -8,7 +7,7 @@ class ChartMachine:
         1. actual_data 가지고 오기 - 14개
         2. predicted_data 가지고 오기 - 15개
         """
-        mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
+        mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
         actual_data = mySqlHandler.find_all_items_from_actual_data(limit=14)
         #print(actual_data)
         predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=15)
@@ -34,7 +33,7 @@ class ChartMachine:
 
     def get_basic_chart(self):
 
-        mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
+        mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
         actual_data = mySqlHandler.find_all_items_from_actual_data(limit=30)
         predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=31)
         #db = MongoDBHandler(db_name="AI", collection_name="actual_data")

@@ -2,7 +2,6 @@ from machine.base_machine import Machine
 from pip._vendor import requests
 import json
 import datetime
-from db.mongodb.mongodb_handler import MongoDBHandler
 
 
 class BithumbMachine:
@@ -14,7 +13,6 @@ class BithumbMachine:
         response = requests.get(url, headers=headers)
 
     def save_data_for_db(self):
-        #db_handler = MongoDBHandler()
 
         url = "https://api.bithumb.com/public/candlestick/BTC_KRW/24h"
 
