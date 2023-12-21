@@ -67,6 +67,12 @@ def get_basic_chart():
 
     return chart_machine.get_basic_chart()
 
+@app.route("/get_all_chart")
+def get_all_chart():
+    chart_machine = ChartMachine()
+
+    return chart_machine.get_all_chart()
+
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
     mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")

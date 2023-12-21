@@ -53,7 +53,11 @@ class MySqlHandler():
         return result
     
     def find_all_items_from_actual_data(self, limit=0):
-        query = """SELECT * FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
+
+        if limit == 0:
+            query = """SELECT * FROM actual_data ORDER BY aid DESC; """
+        else:
+            query = """SELECT * FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         ret_list = []
@@ -72,7 +76,11 @@ class MySqlHandler():
         return ret_list
     
     def find_all_items_from_predicted_data(self, limit=0):
-        query = """SELECT * FROM predicted_data ORDER BY pid DESC LIMIT """ + str(limit) + """;"""
+
+        if limit == 0:
+            query = """SELECT * FROM predicted_data ORDER BY pid DESC;"""
+        else:
+            query = """SELECT * FROM predicted_data ORDER BY pid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         ret_list = []
