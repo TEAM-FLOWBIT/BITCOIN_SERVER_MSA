@@ -7,6 +7,8 @@ import AI.base_lstm as init
 import data.save_one_day_ai as save_one_day_ai
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
+import requests
+import json
 
 
 # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,10 +50,14 @@ def home():
 
 @app.route("/get_predict_value")
 def get_predict_value():
-   
+
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     ret = {}
+    url = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'
+    exchange_rate =requests.get(url, headers=headers).json()[0]['basePrice']
     mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
     data = mySqlHandler.find_all_items_from_predicted_data(limit=1)[0]
+    data["predicted_usd"] = data.get("predicted_price") / exchange_rate
     data["predicted_krw"] = data["predicted_price"]
     del data["predicted_price"]
     #data["usd"] = exchange[0]['basePrice']
