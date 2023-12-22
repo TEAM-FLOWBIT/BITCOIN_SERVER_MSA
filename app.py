@@ -5,6 +5,7 @@ from db.mysql.mysql_handler import MySqlHandler
 import socket
 #import AI.base_lstm as init
 import AI.init_coin_data as init
+import data.cron_ai as soda
 import data.save_one_day_ai as save_one_day_ai
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
@@ -19,8 +20,6 @@ import json
 # rest_port = int(os.environ.get('PORT', 5000))
 
 rest_port=port = int(os.getenv("PORT", 8080))
-print(rest_port)
-print(type(rest_port))
 eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
                    app_name="bitcoin-service",
                    instance_port=rest_port)
@@ -52,13 +51,13 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value():
 
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    #headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     ret = {}
-    url = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'
-    exchange_rate =requests.get(url, headers=headers).json()[0]['basePrice']
+    #url = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'
+    #exchange_rate =requests.get(url, headers=headers).json()[0]['basePrice']
     mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
     data = mySqlHandler.find_all_items_from_predicted_data(limit=1)[0]
-    data["predicted_usd"] = data.get("predicted_price") / exchange_rate
+    # data["predicted_usd"] = data.get("predicted_price") / exchange_rate
     data["predicted_krw"] = data["predicted_price"]
     del data["predicted_price"]
     #data["usd"] = exchange[0]['basePrice']
@@ -90,11 +89,16 @@ def get_chart_analysis():
 
     return data
 
+@app.route("/soda")
+def soda_da():
+    soda.save_one_day_data()
+    return "it's done"
+
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(save_one_day_ai.save_one_day_data, 'cron', hour=0, minute=1)
 sched.start()
 
 if __name__ == "__main__":
-    #init.init_code()
+    init.init_code()
     port = int(os.getenv("PORT", 8080))
     app.run(host='0.0.0.0', port=port, debug=True)

@@ -101,7 +101,6 @@ class ChartMachine:
         chart_data["max"] = max_value + blank
         chart_data["min"] = min_value - blank
         chart_data["label"] = lables
-        #chart_data["label"] = lables[::2][1:]
 
         start_index = len(actual_data_list) - len(predicted_data_list)
 

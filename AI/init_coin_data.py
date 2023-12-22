@@ -20,7 +20,7 @@ def pre_data(data):
 def init_code():
     bithumbMachine = BithumbMachine()
     lstmMachine = LstmMachine()
-    # flowbitMachine = FlowbitMachine()
+    flowbitMachine = FlowbitMachine()
     mySqlHandler = MySqlHandler(mode="remote")
     mySqlHandler.set_table()
     #mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
@@ -49,7 +49,7 @@ def init_code():
 
     #가격 예측 후 순서대로 저장
     for i in result:
-        flowbitMachine = FlowbitMachine()
+        #flowbitMachine = FlowbitMachine()
         #data = extract_close_prices(i)
         data = pre_data(i)
         #print(data)
@@ -66,16 +66,16 @@ def init_code():
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
         #mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
 
-    # chart_machine = ChartMachine()
-    # chat_machine = ChatMachine()
+    chart_machine = ChartMachine()
+    chat_machine = ChatMachine()
 
-    # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-    # #print(actual_data_str)
-    # #print()
-    # #print(predicted_data_str)
-    # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+    #print(actual_data_str)
+    #print()
+    #print(predicted_data_str)
+    res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
 
-    # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-    # #print(analysis_data)
+    analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+    #print(analysis_data)
 
-    # mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
+    mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
