@@ -24,7 +24,7 @@ def init_code():
     mySqlHandler = MySqlHandler(mode="remote")
     mySqlHandler.set_table()
 
-    datas = bithumbMachine.get_all_data()[-50:]
+    datas = bithumbMachine.get_all_data()[-100:]
     mySqlHandler.insert_items_to_actual_data(datas)
 
     result = []
