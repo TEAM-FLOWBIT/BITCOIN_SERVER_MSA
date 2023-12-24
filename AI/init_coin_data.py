@@ -58,12 +58,12 @@ def init_code():
         print(one_day_data)
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
 
-    # chart_machine = ChartMachine()
-    # chat_machine = ChatMachine()
+    chart_machine = ChartMachine()
+    chat_machine = ChatMachine()
 
-    # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-    # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-    # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+    res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+    analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
 
 
-    # mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
+    mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
