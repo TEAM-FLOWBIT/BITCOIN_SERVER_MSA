@@ -99,6 +99,6 @@ sched.add_job(save_one_day_ai.save_one_day_data, 'cron', hour=0, minute=1)
 sched.start()
 
 if __name__ == "__main__":
-    init.init_code()
+    #init.init_code()
     port = int(os.getenv("PORT", 8080))
     app.run(host='0.0.0.0', port=port, debug=True)

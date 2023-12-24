@@ -13,14 +13,11 @@ from AI.flowbit_machine import FlowbitMachine
 from machine.chatGPT_machine import ChatMachine
 
 import datetime
-
-def pre_data(data):
-    result = []
-    for entry in data:
-        values = [entry[key] for key in entry.keys() if key != 'timestamp']
-        result.append(values)
-    return result
-
+def data_processing(data):
+    ret = []
+    for i in data:
+        ret.append(list(i.values())[2:])
+    return ret
 def save_one_day_data():
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
@@ -29,11 +26,11 @@ def save_one_day_data():
     data = bithumbMachine.get_last_data()
     mySqlHandler.insert_item_to_actual_data(data=data)
 
-    past_data = mySqlHandler.find_close_price_from_actual_data(limit=15)
-    #print(past_data)
-    data = data.tolist()
-    #data = pre_data(past_data)
+    past_data = mySqlHandler.find_all_items_from_actual_data(limit=15)
+    print(past_data)
+    data = data_processing(past_data)
     print(data)
+    #data = data.tolist()
     data.reverse()
 
     data = flowbitMachine.data_processing(data)
@@ -42,7 +39,7 @@ def save_one_day_data():
     one_day_data = {}
     one_day_data["timestamp"] = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     one_day_data["predicted_price"] = result + 0.0
-    mySqlHandler.insert_item_to_perdicted_data(data=one_day_data)
+    mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
 
     chart_machine = ChartMachine()
     chat_machine = ChatMachine()
