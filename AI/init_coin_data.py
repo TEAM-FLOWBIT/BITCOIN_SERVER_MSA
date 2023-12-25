@@ -8,7 +8,6 @@ from machine.chart_machine import ChartMachine
 from AI.flowbit_machine import FlowbitMachine
 from db.mysql.mysql_handler import MySqlHandler
 import datetime
-import datetime
 from pytz import timezone
 
 server_timezone = timezone('Asia/Seoul')
@@ -29,6 +28,8 @@ def init_code():
     mySqlHandler.set_table()
 
     datas = bithumbMachine.get_all_data()[-100:]
+    #print last data
+    #print(datas[-1])
     mySqlHandler.insert_items_to_actual_data(datas)
 
     result = []
@@ -57,6 +58,11 @@ def init_code():
         one_day_data["predicted_price"] = result + 0.0
         print(one_day_data)
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
+
+    #print last data
+    print(datas[-1])
+    print(datetime.datetime.now())
+
 
     chart_machine = ChartMachine()
     chat_machine = ChatMachine()
