@@ -31,17 +31,19 @@ def init_code():
     #print last data
     #print(datas[-1])
     mySqlHandler.insert_items_to_actual_data(datas)
+    
 
-    result = []
+    results = []
     for i in range(0, len(datas) - 14):
         chunk = datas[i:i+15]
         #print(chunk) 
-        result.insert(0, chunk)
-    result.reverse()
+        results.insert(0, chunk)
+    results.reverse()
+    
 
 
     #가격 예측 후 순서대로 저장
-    for i in result:
+    for i in results:
         print(i)
         data = pre_data(i)
         data = flowbitMachine.data_processing(data)
@@ -58,10 +60,8 @@ def init_code():
         one_day_data["predicted_price"] = result + 0.0
         print(one_day_data)
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
-
-    #print last data
     print(datas[-1])
-    print(datetime.datetime.now())
+    print(results[-1])
 
 
     chart_machine = ChartMachine()
