@@ -1,5 +1,3 @@
-import sys
-import os
 from machine.bithumb_machine import BithumbMachine
 from AI.lstm_machine import LstmMachine
 from db.mysql.mysql_handler import MySqlHandler
@@ -22,44 +20,35 @@ def pre_data(data):
 
 def init_code():
     bithumbMachine = BithumbMachine()
-    lstmMachine = LstmMachine()
     flowbitMachine = FlowbitMachine()
     mySqlHandler = MySqlHandler(mode="remote")
     mySqlHandler.set_table()
 
-    datas = bithumbMachine.get_all_data()[-100:]
-    #print last data
-    #print(datas[-1])
+    datas = bithumbMachine.get_all_data()[:-1]
     mySqlHandler.insert_items_to_actual_data(datas)
     
-
     results = []
     for i in range(0, len(datas) - 14):
         chunk = datas[i:i+15]
-        #print(chunk) 
         results.insert(0, chunk)
     results.reverse()
     
-
-
-    #가격 예측 후 순서대로 저장
     for i in results:
-        print(i)
         data = pre_data(i)
         data = flowbitMachine.data_processing(data)
         result = flowbitMachine.get_predict_value(data)
         one_day_data = {}
-        date_string = i[-1]["timestamp"]  # 예시로 사용할 날짜 문자열
-        date_format = "%Y-%m-%d"  # 날짜 형식을 지정합니다. 여기서는 "년-월-일" 형식입니다.
+        date_string = i[-1]["timestamp"]
+        date_format = "%Y-%m-%d"
 
         server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
         one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
-        #one_day_data["timestamp"] = ( datetime.datetime.strptime(date_string, date_format) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         one_day_data["timestamp"] = one_day_later
         one_day_data["predicted_price"] = result + 0.0
         print(one_day_data)
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
+
     print(datas[-1])
     print(results[-1])
 
