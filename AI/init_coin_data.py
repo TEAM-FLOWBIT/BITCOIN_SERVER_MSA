@@ -60,5 +60,4 @@ def init_code():
     res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
     analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
 
-
     mySqlHandler.insert_item_to_analysis_data(data=analysis_data)

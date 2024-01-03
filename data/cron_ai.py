@@ -2,23 +2,25 @@ import sys
 import os
 
 sys.path.append(os.path.realpath(__file__)[0:-18]+"..")
-#print(os.path.realpath(__file__)[0:-18]+"..")
+
 from machine.bithumb_machine import BithumbMachine
 from AI.lstm_machine import LstmMachine
 from machine.chart_machine import ChartMachine
 from db.mysql.mysql_handler import MySqlHandler
-import ast
 import datetime
 from AI.flowbit_machine import FlowbitMachine
 from machine.chatGPT_machine import ChatMachine
 
 import datetime
+
 def data_processing(data):
     ret = []
     for i in data:
         ret.append(list(i.values())[2:])
     return ret
+
 def save_one_day_data():
+    
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
     mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
@@ -27,10 +29,7 @@ def save_one_day_data():
     mySqlHandler.insert_item_to_actual_data(data=data)
 
     past_data = mySqlHandler.find_all_items_from_actual_data(limit=15)
-    print(past_data)
     data = data_processing(past_data)
-    print(data)
-    #data = data.tolist()
     data.reverse()
 
     data = flowbitMachine.data_processing(data)

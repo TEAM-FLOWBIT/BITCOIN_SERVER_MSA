@@ -74,9 +74,6 @@ class ChartMachine:
         mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
         actual_data = mySqlHandler.find_all_items_from_actual_data()
         predicted_data = mySqlHandler.find_all_items_from_predicted_data()
-        #db = MongoDBHandler(db_name="AI", collection_name="actual_data")
-        #actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
-        #predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
 
         actual_data_list = []
         predicted_data_list = []
