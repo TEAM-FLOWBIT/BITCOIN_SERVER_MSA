@@ -8,14 +8,13 @@ sys.path.append(os.path.realpath(__file__)[0:-12] + "..")
 #print(os.path.realpath(__file__)[0:-12] + "..")
 
 from machine.bithumb_machine import BithumbMachine
-from db.mongodb.mongodb_handler import MongoDBHandler
 from AI.lstm_machine import LstmMachine
 from db.mysql.mysql_handler import MySqlHandler
 from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
 from db.mysql.mysql_handler import MySqlHandler
-
 import datetime
+from pytz import timezone
 
 def extract_close_prices(data):
     close_prices = [float(entry['close_price']) for entry in data]
@@ -29,7 +28,8 @@ def init_code():
     #mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     #bithubm에서 모든 데이터 가지고 와서 바로 저장
-    datas = bithumbMachine.get_all_data()[-50:]
+    datas = bithumbMachine.get_all_data()
+    #datas = datas[-50:]
     #print(type(datas))
     mySqlHandler.insert_items_to_actual_data(datas)
     #mongodbMachine.insert_items(datas=datas,db_name="AI", collection_name="actual_data")
@@ -53,24 +53,34 @@ def init_code():
         data = lstmMachine.data_processing(data)
         result = lstmMachine.get_predict_value(data)
         one_day_data = {}
+
+        server_timezone = timezone('Asia/Seoul')
+        # 날짜 문자열과 형식 지정
+        date_string = "2023-12-25"
+        date_format = "%Y-%m-%d"
+
         date_string = i[-1]["timestamp"]  # 예시로 사용할 날짜 문자열
         date_format = "%Y-%m-%d"  # 날짜 형식을 지정합니다. 여기서는 "년-월-일" 형식입니다.
-        one_day_data["timestamp"] = ( datetime.datetime.strptime(date_string, date_format) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+
+        server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+        one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        #one_day_data["timestamp"] = ( datetime.datetime.strptime(date_string, date_format) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        one_day_data["timestamp"] = one_day_later
         one_day_data["predicted_price"] = result + 0.0
         #print(one_day_data)
         mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
         #mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
 
-    chart_machine = ChartMachine()
-    chat_machine = ChatMachine()
+    # chart_machine = ChartMachine()
+    # chat_machine = ChatMachine()
 
-    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-    #print(actual_data_str)
-    #print()
-    #print(predicted_data_str)
-    res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+    # actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+    # #print(actual_data_str)
+    # #print()
+    # #print(predicted_data_str)
+    # res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
 
-    analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-    #print(analysis_data)
+    # analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+    # #print(analysis_data)
 
-    mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
+    # mySqlHandler.insert_item_to_analysis_data(data=analysis_data)

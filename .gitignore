@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.DS_Store
 .Python
 build/
 develop-eggs/
@@ -154,6 +155,9 @@ cython_debug/
 
 #AI
 *.h5
+
+#conf
+*.ini
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

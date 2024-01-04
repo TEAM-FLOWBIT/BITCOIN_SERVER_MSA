@@ -1,7 +1,6 @@
 import pymysql
 import configparser
 
-
 class MySqlHandler():
 
     def __init__(self, mode="remote", db_name=None, charset=None):
@@ -10,11 +9,17 @@ class MySqlHandler():
         self.host = config["MYSQL"]['remote_host']
         self.user = config["MYSQL"]['user']
         self.password = config["MYSQL"]['password']
+        print(self.host)
+        print(self.user)
+        print(self.password)
+
         #self.db = config["MYSQL"]['db']
 
         if mode == "remote":
+            print("remote")
             self._client = pymysql.connect(host=self.host, user=self.user, password=self.password, db=db_name, charset=charset)
         elif mode == "local":
+            print("local")
             self._client = pymysql.connect(host='127.0.0.1', user='root', password='1248', db='flowbit', charset='utf8')
         self.cursor = self._client.cursor()
 
@@ -48,7 +53,11 @@ class MySqlHandler():
         return result
     
     def find_all_items_from_actual_data(self, limit=0):
-        query = """SELECT * FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
+
+        if limit == 0:
+            query = """SELECT * FROM actual_data ORDER BY aid DESC; """
+        else:
+            query = """SELECT * FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         ret_list = []
@@ -67,7 +76,11 @@ class MySqlHandler():
         return ret_list
     
     def find_all_items_from_predicted_data(self, limit=0):
-        query = """SELECT * FROM predicted_data ORDER BY pid DESC LIMIT """ + str(limit) + """;"""
+
+        if limit == 0:
+            query = """SELECT * FROM predicted_data ORDER BY pid DESC;"""
+        else:
+            query = """SELECT * FROM predicted_data ORDER BY pid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         results = self.cursor.fetchall()
         ret_list = []
@@ -121,10 +134,10 @@ class MySqlHandler():
         #print(result)
         return result
     def set_table(self):
-        query = """CREATE DATABASE IF NOT EXISTS flowbit;"""
-        self.cursor.execute(query)
+        # query = """CREATE DATABASE IF NOT EXISTS flowbit;"""
+        # self.cursor.execute(query)
 
-        query="""USE flowbit;"""
+        query="""USE cdb_dbname;"""
         self.cursor.execute(query)
 
         query = """DROP TABLE  if exists analysis_data;"""

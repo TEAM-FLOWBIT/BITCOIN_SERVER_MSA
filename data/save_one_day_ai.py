@@ -4,7 +4,6 @@ import os
 sys.path.append(os.path.realpath(__file__)[0:-18]+"..")
 #print(os.path.realpath(__file__)[0:-18]+"..")
 from machine.bithumb_machine import BithumbMachine
-from db.mongodb.mongodb_handler import MongoDBHandler
 from AI.lstm_machine import LstmMachine
 from machine.chart_machine import ChartMachine
 from db.mysql.mysql_handler import MySqlHandler
@@ -13,11 +12,6 @@ import datetime
 from machine.chatGPT_machine import ChatMachine
 
 import datetime
-
-def extract_close_prices(data):
-    #print(str(data))
-    #close_prices = [float(entry['close_price']) for entry in data]
-    return close_prices
 
 def get_last_price_mysql(data):
     data = ast.literal_eval(str(data))
@@ -28,7 +22,7 @@ def save_one_day_data():
     bithumbMachine = BithumbMachine()
     lstmMachine = LstmMachine()
     #mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
-    mySqlHandler = MySqlHandler(mode="remote", db_name="flowbit")
+    mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
 
     #하루치 데이터 저장
     data = bithumbMachine.get_last_data()
