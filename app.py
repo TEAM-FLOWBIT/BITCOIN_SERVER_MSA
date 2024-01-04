@@ -8,6 +8,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import os
 
 rest_port=port = int(os.getenv("PORT", 8080))
+
 eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
                    app_name="bitcoin-service",
                    instance_port=rest_port)
@@ -25,7 +26,6 @@ def home():
     </html>
     """
     return html
-
 @app.route("/get_predict_value")
 def get_predict_value():
     ret = {}
