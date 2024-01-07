@@ -1,17 +1,17 @@
 from flask import Flask, request, render_template
 from machine.chart_machine import ChartMachine
-import py_eureka_client.eureka_client as eureka_client
+#import py_eureka_client.eureka_client as eureka_client
 from db.mysql.mysql_handler import MySqlHandler
 import AI.init_coin_data as init
 import data.cron_ai as soda
 from apscheduler.schedulers.background import BackgroundScheduler
 import os
 
-rest_port=port = int(os.getenv("PORT", 8080))
+# rest_port=port = int(os.getenv("PORT", 8080))
 
-eureka_client.init(eureka_server="https://minwoomaven.apps.sys.paas-ta-dev10.kr/eureka",
-                   app_name="bitcoin-service",
-                   instance_port=rest_port)
+# eureka_client.init(eureka_server="https://flowbit.co.kr/eureka",
+#                    app_name="bitcoin-service",
+#                    instance_port=rest_port)
 
 app = Flask(__name__)
 
@@ -58,11 +58,20 @@ def get_chart_analysis():
 
     return data
 
+@app.route("/test_cron")
+def test_cron():
+    soda.save_one_day_data()
+
+    return "this is my name"
+
 if __name__ == "__main__":
+
     init.init_code()
     port = int(os.getenv("PORT", 8080))
+
     sched = BackgroundScheduler(daemon=True)
-    sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
     sched. remove_all_jobs()
+    sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
     sched.start()
-    app.run(host='0.0.0.0', port=port, debug=True)
+    
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
