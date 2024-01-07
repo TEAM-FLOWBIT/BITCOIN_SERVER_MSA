@@ -1,4 +1,5 @@
 from db.mysql.mysql_handler import MySqlHandler
+from db.mongodb.mongodb_handler import MongoDBHandler
 
 class ChartMachine:
 
@@ -7,13 +8,9 @@ class ChartMachine:
         1. actual_data 가지고 오기 - 14개
         2. predicted_data 가지고 오기 - 15개
         """
-        mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
-        actual_data = mySqlHandler.find_all_items_from_actual_data(limit=14)
-        #print(actual_data)
-        predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=15)
-        #db = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
-        #actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
-        #predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
+        db = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+        actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
+        predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
 
         actual_data_list = []
         predicted_data_list = []
@@ -33,12 +30,9 @@ class ChartMachine:
 
     def get_basic_chart(self):
 
-        mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
-        actual_data = mySqlHandler.find_all_items_from_actual_data(limit=30)
-        predicted_data = mySqlHandler.find_all_items_from_predicted_data(limit=31)
-        #db = MongoDBHandler(db_name="AI", collection_name="actual_data")
-        #actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
-        #predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
+        db = MongoDBHandler(db_name="AI", collection_name="actual_data")
+        actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
+        predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
 
         actual_data_list = []
         predicted_data_list = []
@@ -71,9 +65,9 @@ class ChartMachine:
     
     def get_all_chart(self):
 
-        mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
-        actual_data = mySqlHandler.find_all_items_from_actual_data()
-        predicted_data = mySqlHandler.find_all_items_from_predicted_data()
+        db = MongoDBHandler(db_name="AI", collection_name="actual_data")
+        actual_data = db.find_items(db_name="AI", collection_name="actual_data")
+        predicted_data = db.find_items(db_name="AI", collection_name="predicted_data")
 
         actual_data_list = []
         predicted_data_list = []
@@ -87,9 +81,6 @@ class ChartMachine:
             predicted_data_list.append(i["predicted_price"])
 
         chart_data = {}
-        actual_data_list.reverse()
-        predicted_data_list.reverse()
-        lables.reverse()
 
         max_value = max(actual_data_list + predicted_data_list)
         min_value = min(actual_data_list + predicted_data_list)

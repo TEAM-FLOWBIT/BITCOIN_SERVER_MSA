@@ -1,10 +1,10 @@
 from flask import Flask, request, render_template
 from machine.chart_machine import ChartMachine
 #import py_eureka_client.eureka_client as eureka_client
-from db.mysql.mysql_handler import MySqlHandler
-import AI.init_coin_data as init
+import data.init_coin_data as init
 import data.cron_ai as soda
 from apscheduler.schedulers.background import BackgroundScheduler
+from db.mongodb.mongodb_handler import MongoDBHandler
 import os
 
 # rest_port=port = int(os.getenv("PORT", 8080))
@@ -29,12 +29,18 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value():
     ret = {}
-    mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
-    data = mySqlHandler.find_all_items_from_predicted_data(limit=1)[0]
+    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+
+    data = mongodbMachine.find_last_item(db_name="AI", collection_name="predicted_data")
+    del data["_id"]
+
     data["predicted_krw"] = data["predicted_price"]
     del data["predicted_price"]
+
     ret["predicted_data"] = data
-    data = mySqlHandler.find_all_items_from_actual_data(limit=1)[0]
+    data = mongodbMachine.find_last_item(db_name="AI", collection_name="actual_data")
+    del data["_id"]
+
     ret["actual_data"] = data
 
     return ret
@@ -53,9 +59,12 @@ def get_all_chart():
 
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
-    mySqlHandler = MySqlHandler(mode="remote", db_name="cdb_dbname")
-    data = mySqlHandler.find_all_items_from_analysis_data(limit=1)[0]
 
+    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="analysis_data")
+    data = mongodbMachine.find_last_item(db_name="AI", collection_name="analysis_data")
+    
+    del data["_id"]
+    
     return data
 
 @app.route("/test_cron")

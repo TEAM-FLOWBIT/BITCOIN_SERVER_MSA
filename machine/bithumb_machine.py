@@ -33,8 +33,6 @@ class BithumbMachine:
 
         for entry in data_list:
             tmp = {}
-            # timestamp = 1463460958000
-            # datetimeobj = datetime.datetime.fromtimestamp(entry[0] / 1000)
             time_tmp = datetime.datetime.fromtimestamp(entry[0] / 1000)
             year = time_tmp.year
             month = time_tmp.month
@@ -69,8 +67,6 @@ class BithumbMachine:
 
         for entry in data_list:
             tmp = {}
-            # timestamp = 1463460958000
-            # datetimeobj = datetime.datetime.fromtimestamp(entry[0] / 1000)
             time_tmp = datetime.datetime.fromtimestamp(entry[0] / 1000)
             year = time_tmp.year
             month = time_tmp.month
