@@ -16,10 +16,10 @@ class FlowbitMachine:
 
         real_path = os.path.abspath(__file__)[0:-18]+"BITCOIN_MODEL_VER2.h5"
         if os.path.isfile(real_path):
-            print("File exists:", real_path)
+            self.model = load_model(real_path, compile=False)
         else:
             print("File does not exist:", real_path)
-        self.model = load_model(real_path, compile=False)
+        
 
     """def get_model(self, current_data):
 
