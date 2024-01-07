@@ -1,10 +1,8 @@
 from machine.bithumb_machine import BithumbMachine
-from AI.lstm_machine import LstmMachine
-from db.mysql.mysql_handler import MySqlHandler
 from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
 from AI.flowbit_machine import FlowbitMachine
-from db.mysql.mysql_handler import MySqlHandler
+from db.mongodb.mongodb_handler import MongoDBHandler
 import datetime
 from pytz import timezone
 
@@ -13,20 +11,29 @@ server_timezone = timezone('Asia/Seoul')
 def pre_data(data):
     result = []
     for entry in data:
-        values = [entry[key] for key in entry.keys() if key != 'timestamp']
+        values = [entry[key] for key in entry.keys() if key != 'timestamp' and key != "_id"]
         result.append(values)
-
     return result
 
 def init_code():
+    print("start initializing")
+    chart_machine = ChartMachine()
+    chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
-    mySqlHandler = MySqlHandler(mode="remote")
-    mySqlHandler.set_table()
+    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
 
+    print("start reset database")
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="predicted_data")
+    mongodbMachine.delete_items(condition="ALL", db="AI", collection="analysis_data")
+    print("end reset database")
+
+    print("insert all actual data to database")
     datas = bithumbMachine.get_all_data()[:-1]
-    mySqlHandler.insert_items_to_actual_data(datas)
+    mongodbMachine.insert_items(datas=datas, db_name="AI", collection_name="actual_data")
     
+    print("start price prediction")
     results = []
     for i in range(0, len(datas) - 14):
         chunk = datas[i:i+15]
@@ -46,18 +53,14 @@ def init_code():
 
         one_day_data["timestamp"] = one_day_later
         one_day_data["predicted_price"] = result + 0.0
-        print(one_day_data)
-        mySqlHandler.insert_item_to_predicted_data(data=one_day_data)
+        mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
+    print("end price prediction")
 
-    print(datas[-1])
-    print(results[-1])
-
-
-    chart_machine = ChartMachine()
-    chat_machine = ChatMachine()
-
+    print("start price analysis")
     actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
     res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
     analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-
-    mySqlHandler.insert_item_to_analysis_data(data=analysis_data)
+    print("end price analysis")
+    
+    print("insert analysis data to database")
+    mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")

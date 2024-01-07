@@ -9,29 +9,19 @@ class MySqlHandler():
         self.host = config["MYSQL"]['remote_host']
         self.user = config["MYSQL"]['user']
         self.password = config["MYSQL"]['password']
-        print(self.host)
-        print(self.user)
-        print(self.password)
-
-        #self.db = config["MYSQL"]['db']
 
         if mode == "remote":
-            print("remote")
             self._client = pymysql.connect(host=self.host, user=self.user, password=self.password, db=db_name, charset=charset)
         elif mode == "local":
-            print("local")
             self._client = pymysql.connect(host='127.0.0.1', user='root', password='1248', db='flowbit', charset='utf8')
         self.cursor = self._client.cursor()
 
     def insert_items_to_actual_data(self, datas):
-        #print(datas)
         for data in datas:
-            #print(type(data))
             query = """
             INSERT INTO actual_data(timestamp, open_price, close_price,high_price, low_price, volume) 
             VALUES('{timestamp}', '{open_price}', '{close_price}', '{high_price}', '{low_price}', '{volume}');
             """.format(**data)
-            #print(query)
             self.cursor.execute(query)
         
         self._client.commit()
@@ -41,7 +31,6 @@ class MySqlHandler():
         INSERT INTO actual_data(timestamp, open_price, close_price,high_price, low_price, volume) 
         VALUES('{timestamp}', '{open_price}', '{close_price}', '{high_price}', '{low_price}', '{volume}');
         """.format(**data)
-        #print(query)
         self.cursor.execute(query)
         self._client.commit()
 
@@ -49,7 +38,6 @@ class MySqlHandler():
         query = """SELECT close_price FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         result = self.cursor.fetchall()
-        #print(result)
         return result
     
     def find_all_items_from_actual_data(self, limit=0):
@@ -71,7 +59,6 @@ class MySqlHandler():
             item["low_price"] = result[5]
             item["volume"] = result[6]
             ret_list.append(item)
-            #print(item)
         
         return ret_list
     
@@ -113,17 +100,14 @@ class MySqlHandler():
         INSERT INTO analysis_data(timestamp, gpt_response) 
         VALUES('{timestamp}', "{gpt_response}");
         """.format(**data)
-        #print(query)
         self.cursor.execute(query)
         self._client.commit()
     
     def insert_item_to_predicted_data(self, data):
-        #print(type(data))
         query = """
         INSERT INTO predicted_data(timestamp, predicted_price) 
         VALUES('{timestamp}', '{predicted_price}');
         """.format(**data)
-        #print(query)
         self.cursor.execute(query)
         
         self._client.commit()
@@ -131,11 +115,8 @@ class MySqlHandler():
         query = """SELECT close_price FROM actual_data ORDER BY aid DESC LIMIT """ + str(limit) + """;"""
         self.cursor.execute(query)
         result = self.cursor.fetchall()
-        #print(result)
         return result
     def set_table(self):
-        # query = """CREATE DATABASE IF NOT EXISTS flowbit;"""
-        # self.cursor.execute(query)
 
         query="""USE cdb_dbname;"""
         self.cursor.execute(query)
