@@ -4,25 +4,25 @@ services:
     build: .
     #image: bitcoin_server_msa:latest
     environment:
-      MONGODB_HOST: db
+      MONGODB_HOST: mongodb
     command: python -u app.py
     ports:
       - "5000:5000"
     volumes:
       - .:/app
     links:
-      - db
+      - mongodb
     # networks:
     #   - likelion_default
-  db:
+  mongodb:
     image: mongo:latest
-    hostname: db
+    hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
-      - MONGO_INITDB_ROOT_USERNAME=flowbit
-      - MONGO_INITDB_ROOT_PASSWORD=flowbit1234!
+      - MONGO_INITDB_ROOT_USERNAME=user_name
+      - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
-      - .:/db
+      - .:/mongodb
     ports:
       - 27017:27017
 #     networks:

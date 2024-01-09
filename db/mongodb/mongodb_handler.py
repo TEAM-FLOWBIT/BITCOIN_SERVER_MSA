@@ -30,11 +30,10 @@ class MongoDBHandler(DBHandler):
         #print("mongodb://{user}:{password}@{remote_host}:{port}".format(**self.db_config))
 
         if mode == "remote":
-            print("ADDR is: " + os.environ.get("MONGODB_HOST"))
             self._client = MongoClient(host=os.environ.get("MONGODB_HOST", "localhost"),
-                         port=27017, 
-                         username="flowbit", 
-                         password="flowbit1234!",
+                        port=int(self.db_config["port"]), 
+                        username=self.db_config["user"], 
+                        password=self.db_config["password"],
                         authSource="admin")
             #self._client = MongoClient("mongodb://{user}:{password}@{remote_host}:{port}".format(**self.db_config))
         elif mode == "local":
