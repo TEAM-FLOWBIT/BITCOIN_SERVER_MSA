@@ -8,7 +8,7 @@ class ChartMachine:
         1. actual_data 가지고 오기 - 14개
         2. predicted_data 가지고 오기 - 15개
         """
-        db = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+        db = MongoDBHandler(mode="remote", db_name="AI", collection_name="actual_data")
         actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
         predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
 

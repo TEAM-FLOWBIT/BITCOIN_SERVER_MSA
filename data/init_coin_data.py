@@ -21,7 +21,7 @@ def init_code():
     chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+    mongodbMachine = MongoDBHandler(mode="remote", db_name="AI", collection_name="actual_data")
 
     print("start reset database")
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")

@@ -76,7 +76,7 @@ def test_cron():
 if __name__ == "__main__":
 
     init.init_code()
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
     sched. remove_all_jobs()

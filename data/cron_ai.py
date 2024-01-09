@@ -19,7 +19,7 @@ def save_one_day_data():
     print("start cron method")
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     print("insert last actual data to database")
     data = bithumbMachine.get_last_data()
