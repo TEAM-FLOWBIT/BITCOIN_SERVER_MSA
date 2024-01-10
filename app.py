@@ -29,7 +29,7 @@ def home():
 @app.route("/get_predict_value")
 def get_predict_value():
     ret = {}
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="actual_data")
 
     data = mongodbMachine.find_last_item(db_name="AI", collection_name="predicted_data")
     del data["_id"]
@@ -60,7 +60,7 @@ def get_all_chart():
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
 
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="analysis_data")
+    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="analysis_data")
     data = mongodbMachine.find_last_item(db_name="AI", collection_name="analysis_data")
     
     del data["_id"]
@@ -76,7 +76,7 @@ def test_cron():
 if __name__ == "__main__":
 
     init.init_code()
-    port = int(os.getenv("PORT", 8080))
+    port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
     sched. remove_all_jobs()

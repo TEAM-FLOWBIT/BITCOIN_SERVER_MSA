@@ -1,0 +1,6 @@
+flask
+pymongo
+pymysql
+apscheduler
+tensorflow
+scikit-learn
