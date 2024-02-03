@@ -1,18 +1,16 @@
 from flask import Flask, request, render_template
 from machine.chart_machine import ChartMachine
-#import py_eureka_client.eureka_client as eureka_client
+import py_eureka_client.eureka_client as eureka_client
 import data.init_coin_data as init
 import data.cron_ai as soda
 from apscheduler.schedulers.background import BackgroundScheduler
 from db.mongodb.mongodb_handler import MongoDBHandler
 import os
 
-# rest_port=port = int(os.getenv("PORT", 8080))
-
-# eureka_client.init(eureka_server="https://flowbit.co.kr/eureka",
-#                    app_name="bitcoin-service",
-#                    instance_port=rest_port)
-
+rest_port= port = int(os.getenv("PORT", 8080))
+eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
+                   app_name="bitcoin-service",
+                   instance_port=rest_port)
 app = Flask(__name__)
 
 @app.route("/")
