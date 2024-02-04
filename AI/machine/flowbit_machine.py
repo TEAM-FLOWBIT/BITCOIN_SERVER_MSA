@@ -3,7 +3,7 @@ from sklearn.preprocessing import MinMaxScaler
 import sys
 import os
 import numpy as np
-
+import json
 
 class FlowbitMachine:
     def __init__(self):
@@ -11,23 +11,42 @@ class FlowbitMachine:
         가장 먼저 호출되는 메서드
         config.ini에서 정보를 읽어옴
         """
+        with open('conf/config.json') as f:
+            config = json.load(f)
+
+        model_data = config['modelData']
+
+        self.model_size = model_data["modelSize"]
+        self.coin_name = model_data["coinName"]
+        self.coin_currency = model_data["coinCurrency"]
+        self.model_version = model_data["modelVersion"]
+        self.file_name_extension = model_data["fileNameExtension"]
+
+        model_list = {}
+
+        for index in range(self.model_size):
+            model_name = self.coin_currency[index] + "_MODEL_" + self.model_version[index]+ "." + self.file_name_extension[index]
+
+            real_path = os.path.abspath(__file__)[0:-18]+"..\models\\" + model_name
+            if os.path.isfile(real_path):
+                model = load_model(real_path, compile=False)
+            else:
+                print("File does not exist:", real_path)
+            
+            model_list[self.coin_currency[index]] = model
+
+        
         self.scalerOne = MinMaxScaler(feature_range=(0, 1))
         self.scalerMul = MinMaxScaler(feature_range=(0, 1))
 
-        real_path = os.path.abspath(__file__)[0:-18]+"..\models\BTC_MODEL_VER2.h5"
-        if os.path.isfile(real_path):
-            self.model = load_model(real_path, compile=False)
-        else:
-            print("File does not exist:", real_path)
-        
+        self.model_list = model_list
 
-    """def get_model(self, current_data):
+    def get_model(self, coin_currency="BTC"):
+        return self.model_list.get(coin_currency)
 
-        loaded_model = load_model(self.model_path, compile=False)
-        predicted = loaded_model.predict(current_data)
-        #ret = load_model.predict(current_data)
-
-        return predicted"""
+    
+    def get_model_list(self):
+        return self.model_list
 
     def get_predict_value(self, current_data):
         """
