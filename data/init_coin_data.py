@@ -1,7 +1,7 @@
 from machine.bithumb_machine import BithumbMachine
 from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
-from AI.flowbit_machine import FlowbitMachine
+from AI.machine.flowbit_machine import FlowbitMachine
 from db.mongodb.mongodb_handler import MongoDBHandler
 import datetime
 from pytz import timezone
@@ -21,7 +21,7 @@ def init_code():
     chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
     flowbitMachine = FlowbitMachine()
-    mongodbMachine = MongoDBHandler(mode="remote", db_name="AI", collection_name="actual_data")
+    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
 
     print("start reset database")
     mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")

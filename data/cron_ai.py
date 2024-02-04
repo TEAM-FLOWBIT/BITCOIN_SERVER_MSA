@@ -5,7 +5,7 @@ from machine.bithumb_machine import BithumbMachine
 from machine.chart_machine import ChartMachine
 from db.mongodb.mongodb_handler import MongoDBHandler
 import datetime
-from AI.flowbit_machine import FlowbitMachine
+from AI.machine.flowbit_machine import FlowbitMachine
 from machine.chatGPT_machine import ChatMachine
 import datetime
 

@@ -14,7 +14,7 @@ class FlowbitMachine:
         self.scalerOne = MinMaxScaler(feature_range=(0, 1))
         self.scalerMul = MinMaxScaler(feature_range=(0, 1))
 
-        real_path = os.path.abspath(__file__)[0:-18]+"BITCOIN_MODEL_VER2.h5"
+        real_path = os.path.abspath(__file__)[0:-18]+"..\models\BTC_MODEL_VER2.h5"
         if os.path.isfile(real_path):
             self.model = load_model(real_path, compile=False)
         else:
