@@ -116,18 +116,18 @@ pipeline {
             steps {
                 echo 'Pull Docker Image & Docker Image Run'
                 sh """
-                    docker run \
-                    --name ${CONTAINER_NAME} \
-                    --restart always \
-                    --env PORT=5005 \
-                    --env MONGODB_HOST=mongodb \
-                    -p 5005:5005 \
-                    --privileged \
-                    -v $(pwd):/app \
-                    --network likelion_default \
-                    ${IMAGE_NAME}:latest \
-                    python -u app.py
-                """
+                docker run \
+                --name \${CONTAINER_NAME} \
+                --restart always \
+                --env PORT=5005 \
+                --env MONGODB_HOST=mongodb \
+                -p 5005:5005 \
+                --privileged \
+                -v \$(pwd):/app \
+                --network likelion_default \
+                \${IMAGE_NAME}:latest \
+                python -u app.py
+            """
 
 
             }
