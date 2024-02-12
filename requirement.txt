@@ -3,7 +3,4 @@ pymongo
 pymysql
 apscheduler
 tensorflow
-scikit-learn
-numpy
-py_eureka_client
-openai==0.28
+scikit-learn    
