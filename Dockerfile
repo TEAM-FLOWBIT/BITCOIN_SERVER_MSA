@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python3:3.10.13-bullseye
 ADD . /flask
 WORKDIR /flask
 RUN pip install -r requirement.txt
