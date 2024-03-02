@@ -1,22 +1,26 @@
 {
     "modelData": {
-        "modelSize" : 3,
+        "modelSize" : 4,
         "coinName": [
             "bitcoin",
             "ethereum",
-            "ripple"
+            "ripple",
+            "bitcoin"
         ],
         "coinCurrency": [
             "BTC",
             "ETH",
-            "XRP"
+            "XRP",
+            "BTC"
         ],
         "modelVersion": [
             "VER2",
             "VER1",
-            "VER1"
+            "VER1",
+            "VER3"
         ],
         "fileNameExtension": [
+            "h5",
             "h5",
             "h5",
             "h5"

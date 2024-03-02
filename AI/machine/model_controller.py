@@ -1,10 +1,11 @@
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import sys
+sys.path.append("C:\AGAPE\FLOW-BIT\projects\BITCOIN_SERVER_MSA")
 import os
 import numpy as np
 import json
-from machine.flowbit_machine import FlowbitMachine
+from AI.machine.flowbit_machine import FlowbitMachine
 
 class ModelController:
     def __init__(self):
@@ -23,18 +24,20 @@ class ModelController:
         self.model_version = model_data["modelVersion"]
         self.file_name_extension = model_data["fileNameExtension"]
 
-        model_list = {}
+        self.model_list = {}
 
         for index in range(self.model_size):
             model_name = self.coin_currency[index] + "_MODEL_" + self.model_version[index]+ "." + self.file_name_extension[index]
 
-            real_path = os.path.abspath(__file__)[0:-18]+"..\models\\" + model_name
+            real_path = os.path.abspath(__file__)[0:-20]+"\..\models\\" + model_name
+            #print(os.path.abspath(__file__)[0:-20])
             if os.path.isfile(real_path):
+                print(real_path)
                 model = FlowbitMachine(model_path=real_path)
             else:
                 print("File does not exist:", real_path)
             
-            model_list[self.coin_currency[index]] = model
+            self.model_list[model_name] = model
 
 
     def get_model(self, coin_currency="BTC"):
