@@ -3,6 +3,7 @@ from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
 from AI.machine.flowbit_machine import FlowbitMachine
 from db.mongodb.mongodb_handler import MongoDBHandler
+from AI.machine.model_controller import ModelController
 import datetime
 from pytz import timezone
 
@@ -20,47 +21,55 @@ def init_code():
     chart_machine = ChartMachine()
     chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
-    flowbitMachine = FlowbitMachine()
-    mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+    modelController = ModelController()
+    for model_data in modelController.get_model_list():
 
-    print("start reset database")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="predicted_data")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="analysis_data")
-    print("end reset database")
+        #flowbitMachine = FlowbitMachine()
+        if model_data.get("mode_type") != "prev" and model_data.get("coin_currency") != "BTC" :
+            continue
 
-    print("insert all actual data to database")
-    datas = bithumbMachine.get_all_data()[:-1]
-    mongodbMachine.insert_items(datas=datas, db_name="AI", collection_name="actual_data")
+        flowbitMachine = model_data.get("model_class")
+        mongodbMachine = MongoDBHandler(mode="local", db_name="AI", collection_name="actual_data")
+
+        print("start reset database")
+        mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")
+        mongodbMachine.delete_items(condition="ALL", db="AI", collection="predicted_data")
+        mongodbMachine.delete_items(condition="ALL", db="AI", collection="analysis_data")
+        print("end reset database")
+
+        print("insert all actual data to database")
+        datas = bithumbMachine.get_all_data()[:-1]
+        mongodbMachine.insert_items(datas=datas, db_name="AI", collection_name="actual_data")
     
-    print("start price prediction")
-    results = []
-    for i in range(0, len(datas) - 14):
-        chunk = datas[i:i+15]
-        results.insert(0, chunk)
-    results.reverse()
+        print("start price prediction")
+        results = []
+        for i in range(0, len(datas) - 14):
+            chunk = datas[i:i+15]
+            results.insert(0, chunk)
+        results.reverse()
     
-    for i in results:
-        data = pre_data(i)
-        data = flowbitMachine.data_processing(data)
-        result = flowbitMachine.get_predict_value(data)
-        one_day_data = {}
-        date_string = i[-1]["timestamp"]
-        date_format = "%Y-%m-%d"
+        for i in results:
+            data = pre_data(i)
+            data = flowbitMachine.data_processing(data)
+            result = flowbitMachine.get_predict_value(data)
+            one_day_data = {}
+            date_string = i[-1]["timestamp"]
+            date_format = "%Y-%m-%d"
 
-        server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
-        one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+            one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
 
-        one_day_data["timestamp"] = one_day_later
-        one_day_data["predicted_price"] = result + 0.0
-        mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
-    print("end price prediction")
+            one_day_data["timestamp"] = one_day_later
+            one_day_data["predicted_price"] = result + 0.0
+            mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
+        
+        print("end price prediction")
 
-    print("start price analysis")
-    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-    res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-    analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-    print("end price analysis")
+        print("start price analysis")
+        actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
+        res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        print("end price analysis")
     
-    print("insert analysis data to database")
-    mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")
+        print("insert analysis data to database")
+        mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")

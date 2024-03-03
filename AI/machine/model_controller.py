@@ -23,25 +23,39 @@ class ModelController:
         self.coin_currency = model_data["coinCurrency"]
         self.model_version = model_data["modelVersion"]
         self.file_name_extension = model_data["fileNameExtension"]
+        self.model_type = model_data["modelType"]
 
-        self.model_list = {}
-
+        self.model_data_list = []
+        
         for index in range(self.model_size):
+            model_define_data = {
+            "model_type" : None,
+            "model_class" : None,
+            "model_path" : None,
+            "coin_currency" : None
+            }
             model_name = self.coin_currency[index] + "_MODEL_" + self.model_version[index]+ "." + self.file_name_extension[index]
 
             real_path = os.path.abspath(__file__)[0:-20]+"\..\models\\" + model_name
             #print(os.path.abspath(__file__)[0:-20])
             if os.path.isfile(real_path):
-                print(real_path)
+                #print(real_path)
                 model = FlowbitMachine(model_path=real_path)
             else:
                 print("File does not exist:", real_path)
             
-            self.model_list[model_name] = model
+            model_define_data["model_path"] = real_path
+            model_define_data["model_type"] = self.model_type[index]
+            model_define_data["model_class"] = model
+            model_define_data["coin_currency"] = self.coin_currency[index]
+
+            self.model_data_list.append(model_define_data)
+            #print(self.model_data_list)
 
 
-    def get_model(self, coin_currency="BTC"):
-        return self.model_list.get(coin_currency)
+
+    def get_model(self, model_index=0):
+        return self.model_data_list[model_index]
 
     def get_model_list(self):
-        return self.model_list
+        return self.model_data_list

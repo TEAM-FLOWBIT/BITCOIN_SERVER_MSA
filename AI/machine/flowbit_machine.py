@@ -17,11 +17,8 @@ class FlowbitMachine:
         self.scalerOne = MinMaxScaler(feature_range=(0, 1))
         self.scalerMul = MinMaxScaler(feature_range=(0, 1))
 
-    def get_model(self, coin_currency="BTC"):
-        return self.model_list.get(coin_currency)
-
-    def get_model_list(self):
-        return self.model_list
+    def get_model(self):
+        return self.model
 
     def get_predict_value(self, current_data):
         """

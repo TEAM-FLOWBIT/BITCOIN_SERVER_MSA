@@ -1,6 +1,12 @@
 {
     "modelData": {
         "modelSize" : 4,
+        "modelType": [
+            "prev",
+            "prev",
+            "prev",
+            "pridict"
+        ],
         "coinName": [
             "bitcoin",
             "ethereum",
