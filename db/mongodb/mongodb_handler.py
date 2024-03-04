@@ -98,7 +98,7 @@ class MongoDBHandler(DBHandler):
         """
         return self._collection.name
 
-    def insert_item(self, data, db_name=None, collection_name=None):
+    def insert_item(self, data, database_name=None, collection_name=None):
         """
 
         :param data:
@@ -107,14 +107,14 @@ class MongoDBHandler(DBHandler):
         :return: 입력 완료된 문서의 ObjectId를 반환한다.
         """
 
-        if db_name is not None:
-            self._db = self._client[db_name]
+        if database_name is not None:
+            self._db = self._client[database_name]
         if collection_name is not None:
             self._collection = self._db[collection_name]
 
         return self._collection.insert_one(data).inserted_id
 
-    def insert_items(self, datas, db_name=None, collection_name=None):
+    def insert_items(self, datas, database_name=None, collection_name=None):
         """
         MongoDB에 다수의 문서를 입력하기 위한 메소드이다.
         :param datas:
@@ -123,8 +123,8 @@ class MongoDBHandler(DBHandler):
         :return: 입력 완료된 문서의 ObjectId리스트를 반환한다.
         """
 
-        if db_name is not None:
-            self._db = self._client[db_name]
+        if database_name is not None:
+            self._db = self._client[database_name]
         if collection_name is not None:
             self._collection = self._db[collection_name]
         return self._collection.insert_many(datas).inserted_ids
@@ -193,6 +193,7 @@ class MongoDBHandler(DBHandler):
             self._db = self._client[db_name]
         if collection_name is not None:
             self._collection = self._db[collection_name]
+       
         return self._collection.find(condition).sort("_id", -1).limit(limit)
 
     def find_last_item(self, condition=None, db_name=None, collection_name=None):

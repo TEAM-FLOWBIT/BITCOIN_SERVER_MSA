@@ -3,14 +3,14 @@ from db.mongodb.mongodb_handler import MongoDBHandler
 
 class ChartMachine:
 
-    def get_analysis_chart(self):
+    def get_analysis_chart(self, database_name="BTC"):
         """
         1. actual_data 가지고 오기 - 14개
         2. predicted_data 가지고 오기 - 15개
         """
-        db = MongoDBHandler(mode="remote", db_name="AI", collection_name="actual_data")
-        actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
-        predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
+        db = MongoDBHandler(mode="local", db_name=database_name, collection_name="actual_data")
+        actual_data = db.find_items_for_chart( db_name=database_name, collection_name="actual_data", limit=14)
+        predicted_data = db.find_items_for_chart(db_name=database_name, collection_name="predicted_data", limit=15)
 
         actual_data_list = []
         predicted_data_list = []
@@ -19,6 +19,7 @@ class ChartMachine:
         predicted_data_str = ''
 
         for i in actual_data:
+            print("일단 여기까지 옴...")
             i["_id"] = str(i["_id"])
             actual_data_str += str(i)
 
@@ -28,11 +29,11 @@ class ChartMachine:
         
         return actual_data_str, predicted_data_str
 
-    def get_basic_chart(self):
+    def get_basic_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(db_name="AI", collection_name="actual_data")
-        actual_data = db.find_items_for_chart( db_name="AI", collection_name="actual_data", limit=14)
-        predicted_data = db.find_items_for_chart(db_name="AI", collection_name="predicted_data", limit=15)
+        db = MongoDBHandler(db_name=db_name, collection_name="actual_data")
+        actual_data = db.find_items_for_chart( db_name=db_name, collection_name="actual_data", limit=14)
+        predicted_data = db.find_items_for_chart(db_name=db_name, collection_name="predicted_data", limit=15)
 
         actual_data_list = []
         predicted_data_list = []
@@ -63,11 +64,11 @@ class ChartMachine:
 
         return chart_data
     
-    def get_all_chart(self):
+    def get_all_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(db_name="AI", collection_name="actual_data")
-        actual_data = db.find_items(db_name="AI", collection_name="actual_data")
-        predicted_data = db.find_items(db_name="AI", collection_name="predicted_data")
+        db = MongoDBHandler(db_name=db_name, collection_name="actual_data")
+        actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
+        predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
 
         actual_data_list = []
         predicted_data_list = []

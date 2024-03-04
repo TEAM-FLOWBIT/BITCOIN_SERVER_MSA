@@ -8,9 +8,9 @@ from db.mongodb.mongodb_handler import MongoDBHandler
 import os
 
 rest_port= port = int(os.getenv("PORT", 8080))
-eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
-                   app_name="bitcoin-service",
-                   instance_port=rest_port)
+# eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
+#                    app_name="bitcoin-service",
+#                    instance_port=rest_port)
 app = Flask(__name__)
 
 @app.route("/")
