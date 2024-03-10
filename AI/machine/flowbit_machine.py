@@ -28,6 +28,17 @@ class FlowbitMachine:
         predicted_value = self.scalerOne.inverse_transform(predicted_value)
 
         return predicted_value[0][0]
+    
+    def get_predict_value_for_list(self, current_data):
+        """
+        모델을 불러와서 학습을 진행하고 결과값을 return
+        """
+        predicted_value = self.model.predict(current_data)
+        predicted_value = self.scalerOne.inverse_transform(predicted_value)
+
+        print(predicted_value)
+
+        return predicted_value[0]
 
     def data_processing(self, raw_data):
         """
