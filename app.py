@@ -58,8 +58,8 @@ def get_all_chart():
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
 
-    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="analysis_data")
-    data = mongodbMachine.find_last_item(db_name="AI", collection_name="analysis_data")
+    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+    data = mongodbMachine.find_last_item(db_name="BTC", collection_name="analysis_data")
     
     del data["_id"]
     
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
-    sched. remove_all_jobs()
+    sched.remove_all_jobs()
     sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
     sched.start()
     

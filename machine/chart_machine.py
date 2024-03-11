@@ -31,7 +31,7 @@ class ChartMachine:
 
     def get_basic_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(db_name=db_name, collection_name="actual_data")
+        db = MongoDBHandler(mode="local", db_name=db_name, collection_name="actual_data")
         actual_data = db.find_items_for_chart( db_name=db_name, collection_name="actual_data", limit=14)
         predicted_data = db.find_items_for_chart(db_name=db_name, collection_name="predicted_data", limit=15)
 
@@ -66,9 +66,12 @@ class ChartMachine:
     
     def get_all_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(db_name=db_name, collection_name="actual_data")
+        db = MongoDBHandler(mode="local", db_name=db_name, collection_name="actual_data")
         actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
         predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
+
+        print(actual_data)
+        print(predicted_data)
 
         actual_data_list = []
         predicted_data_list = []
@@ -93,8 +96,14 @@ class ChartMachine:
 
         start_index = len(actual_data_list) - len(predicted_data_list)
 
+        print(len(actual_data_list))
+        print(len(predicted_data_list))
+
         chart_data["datas"] = [
             {"label" : "실제 BTC", "datas" : actual_data_list[start_index + 1:]}, 
-            {"label" : "예측 BTC", "datas" : predicted_data_list}]
+            {"label" : "예측 BTC", "datas" : predicted_data_list}
+        ]
+
+        print(chart_data)
 
         return chart_data
