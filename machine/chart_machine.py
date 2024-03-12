@@ -69,6 +69,7 @@ class ChartMachine:
         db = MongoDBHandler(mode="local", db_name=db_name, collection_name="actual_data")
         actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
         predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
+        multiple_predicted_data = db.find_last_item(db_name=db_name, collection_name="multiple_predicted_data")
 
         print(actual_data)
         print(predicted_data)
@@ -83,6 +84,12 @@ class ChartMachine:
         for i in predicted_data:
             lables.append(i["timestamp"][5:])
             predicted_data_list.append(i["predicted_price"])
+
+        for i in multiple_predicted_data.get("predicted_data"):
+            print(i)
+            lables.append(i["timestamp"][5:])
+            predicted_data_list.append(i["predicted_price"])
+
 
         chart_data = {}
 
