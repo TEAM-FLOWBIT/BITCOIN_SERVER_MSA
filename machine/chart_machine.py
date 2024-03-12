@@ -71,9 +71,6 @@ class ChartMachine:
         predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
         multiple_predicted_data = db.find_last_item(db_name=db_name, collection_name="multiple_predicted_data")
 
-        print(actual_data)
-        print(predicted_data)
-
         actual_data_list = []
         predicted_data_list = []
         lables = []
@@ -82,12 +79,12 @@ class ChartMachine:
             actual_data_list.append(i["close_price"])
 
         for i in predicted_data:
-            lables.append(i["timestamp"][5:])
+            lables.append(i["timestamp"])
             predicted_data_list.append(i["predicted_price"])
 
         for i in multiple_predicted_data.get("predicted_data"):
             print(i)
-            lables.append(i["timestamp"][5:])
+            lables.append(i["timestamp"])
             predicted_data_list.append(i["predicted_price"])
 
 
