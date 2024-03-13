@@ -108,6 +108,4 @@ class ChartMachine:
             {"label" : "예측 BTC", "datas" : predicted_data_list}
         ]
 
-        print(chart_data)
-
         return chart_data

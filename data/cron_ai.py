@@ -53,3 +53,65 @@ def save_one_day_data():
 
     print("insert analysis data to database")
     mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")
+    
+    for model_data in modelController.get_model_list():
+
+        #flowbitMachine = FlowbitMachine()
+        if model_data.get("model_type") != "pridict":
+            continue
+
+        print(model_data.get("model_type"))
+        print(model_data.get("coin_currency"))
+
+        flowbitMachine = model_data.get("model_class")
+        database_name = model_data.get("coin_currency")
+        mongodbMachine = MongoDBHandler(mode="local", db_name=database_name, collection_name="actual_data")
+
+        #print("start reset database")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="actual_data")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="predicted_data")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="analysis_data")
+        #print("end reset database")
+
+        #print("insert all actual data to database")
+        #datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        #mongodbMachine.insert_items(datas=datas, database_name=database_name, collection_name="actual_data")
+
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        time_step = 60
+
+        data = datas[-time_step:]
+        
+        print("start price prediction")
+
+        
+        date_string = data[-1]["timestamp"]
+        data = pre_data(data)
+        data = flowbitMachine.data_processing(data)
+        result = flowbitMachine.get_predict_value_for_list(data)
+        result_data_size = len(result)
+        
+        date_format = "%Y-%m-%d"
+
+        server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+        print(server_date)
+        one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        result_data = []
+        predicted_price_list =[int(x) for x in  result.tolist()]
+
+        for index in range(result_data_size):
+            one_day_data = {}
+
+            price = result[index]
+            date = (server_date + datetime.timedelta(days=(index + 1))).strftime("%Y-%m-%d")
+            
+            one_day_data["timestamp"] = date
+            one_day_data["predicted_price"] = int(price)
+
+            result_data.append(one_day_data)
+        
+        print(result_data)
+        db_data = {}
+        db_data["predicted_data"] = result_data
+
+        mongodbMachine.insert_item(data=db_data, database_name=database_name, collection_name="multiple_predicted_data")
