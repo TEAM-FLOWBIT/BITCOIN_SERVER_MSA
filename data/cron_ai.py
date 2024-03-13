@@ -53,7 +53,8 @@ def save_one_day_data():
 
     print("insert analysis data to database")
     mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")
-    
+
+    #todo: one day ai 부분 객체로 바꾸기
     for model_data in modelController.get_model_list():
 
         #flowbitMachine = FlowbitMachine()
