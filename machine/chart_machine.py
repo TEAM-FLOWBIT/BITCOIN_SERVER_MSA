@@ -8,7 +8,7 @@ class ChartMachine:
         1. actual_data 가지고 오기 - 14개
         2. predicted_data 가지고 오기 - 15개
         """
-        db = MongoDBHandler(mode="local", db_name=database_name, collection_name="actual_data")
+        db = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
         actual_data = db.find_items_for_chart( db_name=database_name, collection_name="actual_data", limit=14)
         predicted_data = db.find_items_for_chart(db_name=database_name, collection_name="predicted_data", limit=15)
 
@@ -31,7 +31,7 @@ class ChartMachine:
 
     def get_basic_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(mode="local", db_name=db_name, collection_name="actual_data")
+        db = MongoDBHandler(mode="remote", db_name=db_name, collection_name="actual_data")
         actual_data = db.find_items_for_chart( db_name=db_name, collection_name="actual_data", limit=14)
         predicted_data = db.find_items_for_chart(db_name=db_name, collection_name="predicted_data", limit=15)
 
@@ -66,7 +66,7 @@ class ChartMachine:
     
     def get_all_chart(self, db_name="BTC"):
 
-        db = MongoDBHandler(mode="local", db_name=db_name, collection_name="actual_data")
+        db = MongoDBHandler(mode="remote", db_name=db_name, collection_name="actual_data")
         actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
         predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
         multiple_predicted_data = db.find_last_item(db_name=db_name, collection_name="multiple_predicted_data")

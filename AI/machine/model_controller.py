@@ -36,7 +36,7 @@ class ModelController:
             }
             model_name = self.coin_currency[index] + "_MODEL_" + self.model_version[index]+ "." + self.file_name_extension[index]
 
-            real_path = os.path.abspath(__file__)[0:-20]+"\..\models\\" + model_name
+            real_path = os.path.abspath(__file__)[0:-20]+"/../models/" + model_name
             #print(os.path.abspath(__file__)[0:-20])
             if os.path.isfile(real_path):
                 #print(real_path)

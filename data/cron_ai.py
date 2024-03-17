@@ -66,7 +66,7 @@ def save_one_day_data():
 
         flowbitMachine = model_data.get("model_class")
         database_name = model_data.get("coin_currency")
-        mongodbMachine = MongoDBHandler(mode="local", db_name=database_name, collection_name="actual_data")
+        mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
         #print("start reset database")
         #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="actual_data")
