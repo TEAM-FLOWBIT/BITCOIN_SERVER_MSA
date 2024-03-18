@@ -65,6 +65,19 @@ def get_chart_analysis():
     
     return data
 
+@app.route("/get_chart")
+def get_chart():
+    arg = request.args.get('currency')
+    print(arg)
+    chart_machine = ChartMachine()
+    result = {}
+    if arg == "BTC":
+        result = chart_machine.get_all_multiple_chart(db_name=arg)
+    else:
+        result = chart_machine.get_all_single_chart(db_name=arg)
+
+    return result
+
 @app.route("/test_cron")
 def test_cron():
     soda.save_one_day_data()

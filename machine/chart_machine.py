@@ -109,3 +109,89 @@ class ChartMachine:
         ]
 
         return chart_data
+
+    def get_all_multiple_chart(self, db_name="BTC"):
+
+        db = MongoDBHandler(mode="remote", db_name=db_name, collection_name="actual_data")
+        actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
+        predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
+        multiple_predicted_data = db.find_last_item(db_name=db_name, collection_name="multiple_predicted_data")
+
+        actual_data_list = []
+        predicted_data_list = []
+        lables = []
+
+        for i in actual_data:
+            actual_data_list.append(i["close_price"])
+
+        for i in predicted_data:
+            lables.append(i["timestamp"])
+            predicted_data_list.append(i["predicted_price"])
+
+        for i in multiple_predicted_data.get("predicted_data"):
+            print(i)
+            lables.append(i["timestamp"])
+            predicted_data_list.append(i["predicted_price"])
+
+
+        chart_data = {}
+
+        max_value = max(actual_data_list + predicted_data_list)
+        min_value = min(actual_data_list + predicted_data_list)
+
+        blank = (min_value + max_value) / 30
+        chart_data["max"] = max_value + blank
+        chart_data["min"] = min_value - blank
+        chart_data["label"] = lables
+
+        start_index = len(actual_data_list) - len(predicted_data_list)
+
+        print(len(actual_data_list))
+        print(len(predicted_data_list))
+
+        chart_data["datas"] = [
+            {"label" : "실제 BTC", "datas" : actual_data_list[start_index + 1:]},
+            {"label" : "예측 BTC", "datas" : predicted_data_list}
+        ]
+
+        return chart_data
+
+    def get_all_single_chart(self, db_name="BTC"):
+
+        db = MongoDBHandler(mode="remote", db_name=db_name, collection_name="actual_data")
+        actual_data = db.find_items(db_name=db_name, collection_name="actual_data")
+        predicted_data = db.find_items(db_name=db_name, collection_name="predicted_data")
+
+        actual_data_list = []
+        predicted_data_list = []
+        lables = []
+
+        for i in actual_data:
+            actual_data_list.append(i["close_price"])
+
+        for i in predicted_data:
+            lables.append(i["timestamp"])
+            predicted_data_list.append(i["predicted_price"])
+
+
+        chart_data = {}
+
+        max_value = max(actual_data_list + predicted_data_list)
+        min_value = min(actual_data_list + predicted_data_list)
+
+        blank = (min_value + max_value) / 30
+        chart_data["max"] = max_value + blank
+        chart_data["min"] = min_value - blank
+        chart_data["label"] = lables
+
+        start_index = len(actual_data_list) - len(predicted_data_list)
+
+        print(len(actual_data_list))
+        print(len(predicted_data_list))
+
+        chart_data["datas"] = [
+            {"label" : "실제 BTC", "datas" : actual_data_list[start_index + 1:]},
+            {"label" : "예측 BTC", "datas" : predicted_data_list}
+        ]
+
+        return chart_data
