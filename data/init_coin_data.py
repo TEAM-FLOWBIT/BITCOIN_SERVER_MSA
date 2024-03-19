@@ -1,8 +1,9 @@
 from machine.bithumb_machine import BithumbMachine
 from machine.chatGPT_machine import ChatMachine
 from machine.chart_machine import ChartMachine
-from AI.flowbit_machine import FlowbitMachine
+from AI.machine.flowbit_machine import FlowbitMachine
 from db.mongodb.mongodb_handler import MongoDBHandler
+from AI.machine.model_controller import ModelController
 import datetime
 from pytz import timezone
 
@@ -17,50 +18,138 @@ def pre_data(data):
 
 def init_code():
     print("start initializing")
+    print("start prev data")
     chart_machine = ChartMachine()
     chat_machine = ChatMachine()
     bithumbMachine = BithumbMachine()
-    flowbitMachine = FlowbitMachine()
-    mongodbMachine = MongoDBHandler(mode="remote", db_name="AI", collection_name="actual_data")
+    modelController = ModelController()
+    for model_data in modelController.get_model_list():
+        #flowbitMachine = FlowbitMachine()
+        if model_data.get("model_type") != "prev":
+            continue
 
-    print("start reset database")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="actual_data")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="predicted_data")
-    mongodbMachine.delete_items(condition="ALL", db="AI", collection="analysis_data")
-    print("end reset database")
+        print(model_data.get("model_type"))
+        print(model_data.get("coin_currency"))
 
-    print("insert all actual data to database")
-    datas = bithumbMachine.get_all_data()[:-1]
-    mongodbMachine.insert_items(datas=datas, db_name="AI", collection_name="actual_data")
+        flowbitMachine = model_data.get("model_class")
+        database_name = model_data.get("coin_currency")
+        mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
+
+        print("start reset database")
+        mongodbMachine.delete_items(condition="ALL", db=database_name, collection="actual_data")
+        mongodbMachine.delete_items(condition="ALL", db=database_name, collection="predicted_data")
+        mongodbMachine.delete_items(condition="ALL", db=database_name, collection="analysis_data")
+        print("end reset database")
+
+        print("insert all actual data to database")
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        mongodbMachine.insert_items(datas=datas, database_name=database_name, collection_name="actual_data")
     
-    print("start price prediction")
-    results = []
-    for i in range(0, len(datas) - 14):
-        chunk = datas[i:i+15]
-        results.insert(0, chunk)
-    results.reverse()
+        print("start price prediction")
+        results = []
+        for i in range(0, len(datas) - 14):
+            chunk = datas[i:i+15]
+            results.insert(0, chunk)
+        results.reverse()
     
-    for i in results:
-        data = pre_data(i)
+        for i in results:
+            data = pre_data(i)
+            data = flowbitMachine.data_processing(data)
+            result = flowbitMachine.get_predict_value(data)
+            one_day_data = {}
+            date_string = i[-1]["timestamp"]
+            date_format = "%Y-%m-%d"
+
+            server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+            one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+
+            one_day_data["timestamp"] = one_day_later
+            one_day_data["predicted_price"] = result + 0.0
+            mongodbMachine.insert_item(data=one_day_data, database_name=database_name, collection_name="predicted_data")
+        
+        print("end price prediction")
+
+        print("start price analysis")
+        actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name=database_name)
+        res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        print("end price analysis")
+    
+        print("insert analysis data to database")
+        mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+    
+    for model_data in modelController.get_model_list():
+
+        #flowbitMachine = FlowbitMachine()
+        if model_data.get("model_type") != "pridict":
+            continue
+
+        print(model_data.get("model_type"))
+        print(model_data.get("coin_currency"))
+
+        flowbitMachine = model_data.get("model_class")
+        database_name = model_data.get("coin_currency")
+        mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
+
+        #print("start reset database")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="actual_data")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="predicted_data")
+        #mongodbMachine.delete_items(condition="ALL", db=database_name, collection="analysis_data")
+        #print("end reset database")
+
+        #print("insert all actual data to database")
+        #datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        #mongodbMachine.insert_items(datas=datas, database_name=database_name, collection_name="actual_data")
+
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        time_step = 60
+
+        data = datas[-time_step:]
+        
+        print("start price prediction")
+
+        
+        date_string = data[-1]["timestamp"]
+        data = pre_data(data)
         data = flowbitMachine.data_processing(data)
-        result = flowbitMachine.get_predict_value(data)
-        one_day_data = {}
-        date_string = i[-1]["timestamp"]
+        result = flowbitMachine.get_predict_value_for_list(data)
+        result_data_size = len(result)
+        
         date_format = "%Y-%m-%d"
 
         server_date = server_timezone.localize(datetime.datetime.strptime(date_string, date_format))
+        print(server_date)
         one_day_later = (server_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        result_data = []
+        predicted_price_list =[int(x) for x in  result.tolist()]
 
-        one_day_data["timestamp"] = one_day_later
-        one_day_data["predicted_price"] = result + 0.0
-        mongodbMachine.insert_item(data=one_day_data, db_name="AI", collection_name="predicted_data")
-    print("end price prediction")
+        for index in range(result_data_size):
+            one_day_data = {}
 
-    print("start price analysis")
-    actual_data_str, predicted_data_str = chart_machine.get_analysis_chart()
-    res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
-    analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
-    print("end price analysis")
+            price = result[index]
+            date = (server_date + datetime.timedelta(days=(index + 1))).strftime("%Y-%m-%d")
+            
+            one_day_data["timestamp"] = date
+            one_day_data["predicted_price"] = int(price)
+
+            result_data.append(one_day_data)
+        
+        print(result_data)
+        db_data = {}
+        db_data["predicted_data"] = result_data
+
+        mongodbMachine.insert_item(data=db_data, database_name=database_name, collection_name="multiple_predicted_data")
+            
+        
+        #print("end price prediction")
+
+        #print("start price analysis")
+        #actual_data_str, predicted_data_str = chart_machine.get_analysis_chart(database_name=database_name)
+        #res = chat_machine.get_analysis_result(actual_data_str, predicted_data_str)
+        #analysis_data = {"gpt_response":res, "timestamp":datetime.date.today().strftime("%Y-%m-%d")}
+        #print("end price analysis")
     
-    print("insert analysis data to database")
-    mongodbMachine.insert_item(data = analysis_data, db_name="AI", collection_name="analysis_data")
+        #print("insert analysis data to database")
+        #mongodbMachine.insert_item(data = analysis_data, database_name=database_name, collection_name="analysis_data")
+
+    

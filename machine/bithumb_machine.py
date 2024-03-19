@@ -22,8 +22,8 @@ class BithumbMachine:
         res = json.loads(response.text)
         res["data"]
 
-    def get_all_data(self):
-        url = "https://api.bithumb.com/public/candlestick/BTC_KRW/24h"
+    def get_all_data(self, coin_currency):
+        url = "https://api.bithumb.com/public/candlestick/" + coin_currency + "_KRW/24h"
 
         headers = {"accept": "application/json"}
         response = requests.get(url, headers=headers)
@@ -47,6 +47,7 @@ class BithumbMachine:
 
         # 결과 확인
         return processed_data
+    
     def get_local_data(self):
         url = "https://api.bithumb.com/public/candlestick/BTC_KRW/24h"
 

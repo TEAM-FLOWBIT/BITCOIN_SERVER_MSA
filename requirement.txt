@@ -2,5 +2,8 @@ flask
 pymongo
 pymysql
 apscheduler
-tensorflow
-scikit-learn    
+tensorflow==2.15.0
+scikit-learn
+numpy
+py_eureka_client
+openai==0.28

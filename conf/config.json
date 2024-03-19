@@ -1,0 +1,35 @@
+{
+    "modelData": {
+        "modelSize" : 4,
+        "modelType": [
+            "prev",
+            "prev",
+            "prev",
+            "pridict"
+        ],
+        "coinName": [
+            "bitcoin",
+            "ethereum",
+            "ripple",
+            "bitcoin"
+        ],
+        "coinCurrency": [
+            "BTC",
+            "ETH",
+            "XRP",
+            "BTC"
+        ],
+        "modelVersion": [
+            "VER2",
+            "VER1",
+            "VER1",
+            "VER3"
+        ],
+        "fileNameExtension": [
+            "h5",
+            "h5",
+            "h5",
+            "h5"
+        ]
+    }
+}

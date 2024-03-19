@@ -8,9 +8,9 @@ from db.mongodb.mongodb_handler import MongoDBHandler
 import os
 
 rest_port= port = int(os.getenv("PORT", 8080))
-eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
-                   app_name="bitcoin-service",
-                   instance_port=rest_port)
+# eureka_client.init(eureka_server="http://flowbit-discovery:8761/eureka/",
+#                    app_name="bitcoin-service",
+#                    instance_port=rest_port)
 app = Flask(__name__)
 
 @app.route("/")
@@ -58,12 +58,25 @@ def get_all_chart():
 @app.route("/get_chart_analysis")
 def get_chart_analysis():
 
-    mongodbMachine = MongoDBHandler(db_name="AI", collection_name="analysis_data")
-    data = mongodbMachine.find_last_item(db_name="AI", collection_name="analysis_data")
+    mongodbMachine = MongoDBHandler(db_name="BTC", collection_name="analysis_data")
+    data = mongodbMachine.find_last_item(db_name="BTC", collection_name="analysis_data")
     
     del data["_id"]
     
     return data
+
+@app.route("/get_chart")
+def get_chart():
+    arg = request.args.get('currency')
+    print(arg)
+    chart_machine = ChartMachine()
+    result = {}
+    if arg == "BTC":
+        result = chart_machine.get_all_multiple_chart(db_name=arg)
+    else:
+        result = chart_machine.get_all_single_chart(db_name=arg)
+
+    return result
 
 @app.route("/test_cron")
 def test_cron():
@@ -77,7 +90,7 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
 
     sched = BackgroundScheduler(daemon=True)
-    sched. remove_all_jobs()
+    sched.remove_all_jobs()
     sched.add_job(soda.save_one_day_data, 'cron', hour=0, minute=1)
     sched.start()
     
