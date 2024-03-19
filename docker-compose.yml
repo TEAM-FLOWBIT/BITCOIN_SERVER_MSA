@@ -19,8 +19,8 @@ services:
     hostname: mongodb
     environment:
       - MONGO_INITDB_DATABASE=AI
-      - MONGO_INITDB_ROOT_USERNAME=flowbit
-      - MONGO_INITDB_ROOT_PASSWORD=flowbit1234
+      - MONGO_INITDB_ROOT_USERNAME=user_name
+      - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - .:/mongodb
     ports:
