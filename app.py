@@ -65,7 +65,7 @@ def get_chart_analysis():
     
     return data
 
-@app.route("/get_chart")
+@app.route("/chart")
 def get_chart():
     arg = request.args.get('currency')
     print(arg)
