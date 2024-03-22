@@ -42,7 +42,7 @@ def init_code():
         print("end reset database")
 
         print("insert all actual data to database")
-        datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)
         mongodbMachine.insert_items(datas=datas, database_name=database_name, collection_name="actual_data")
     
         print("start price prediction")
@@ -90,7 +90,7 @@ def init_code():
         database_name = model_data.get("coin_currency")
         mongodbMachine = MongoDBHandler(mode="remote", db_name=database_name, collection_name="actual_data")
 
-        datas = bithumbMachine.get_all_data(coin_currency=database_name)[:-1]
+        datas = bithumbMachine.get_all_data(coin_currency=database_name)
         time_step = 60
 
         data = datas[-time_step:]
@@ -110,7 +110,11 @@ def init_code():
         print(server_date)
         result_data = []
 
-        for index in range(result_data_size)[1:]:
+        for index in range(result_data_size):
+
+            if index == 0:
+                continue
+
             one_day_data = {}
 
             price = result[index]

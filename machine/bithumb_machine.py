@@ -45,6 +45,7 @@ class BithumbMachine:
             tmp["volume"] = eval(entry[5])
             processed_data.append(tmp)
 
+        #print(processed_data[-1])
         # 결과 확인
         return processed_data
     
